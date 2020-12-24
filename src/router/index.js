@@ -1,10 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import login from "../pages/login";
-import mathematics from '../pages/mathematics';
+import tabel from '../pages/tabel';
 import welcome from '../pages/welcome';
-import literature from '../pages/literature';
-import english from '../pages/english';
+import importData from '../pages/importData';
 
 
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
@@ -27,32 +26,21 @@ export default new Router({
                 {
                     path: '/welcome',
                     component: welcome,
-                    meta: {title: '首页'}
+                    meta: {title: 'home'}
                 },
                 {
-                    path: '/mathematics',
-                    component: mathematics,
-                    name: 'mathematics',
-                    meta: {title: '菜单一'}
+                    path: '/tabel',
+                    component: tabel,
+                    name: 'tabel',
+                    meta: {title: 'tabel'}
                 },
                 {
-                    path: '/literature',
-                    component: literature,
-                    name: 'literature',
-                    meta: {title: '语文'}
+                    path: '/importData',
+                    component: importData,
+                    name: 'importData',
+                    meta: {title: 'importData'}
                 },
-                {
-                    path: '/history',
-                    component: literature,
-                    name: 'literature',
-                    meta: {title: '历史'}
-                },
-                {
-                    path: '/english',
-                    component: english,
-                    name: english,
-                    meta: {title: '英语'}
-                },
+
             ]
         }
     ],

@@ -44,7 +44,7 @@
 
 <script>
 export default {
-    name: "mathematics",
+    name: "tabel",
 
     data() {
         return {

@@ -45,6 +45,7 @@ export default {
     methods: {
         login() {
             this.$router.push('home');
+            this.$message.success('登录成功!');
         }
     }
 }

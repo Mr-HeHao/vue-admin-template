@@ -25,6 +25,7 @@ import {
     DropdownMenu,
     DropdownItem,
     MessageBox,
+    Message,
     Notification
 } from 'element-ui';
 
@@ -54,6 +55,7 @@ Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
 
 Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$message = Message;
 
 const notificationInfo = { // 封装element提示通知
     success(title, message) {

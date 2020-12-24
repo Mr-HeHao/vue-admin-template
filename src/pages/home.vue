@@ -2,7 +2,7 @@
 	<el-container class="home-container">
 		<!-- 侧边栏 -->
 		<el-aside class="aside" :width="isCollapse?'64px':'200px'" style="overflow: hidden">
-			<h1 class="aside-title" @click="skipHome">logo</h1>
+			<h1 class="aside-title" @click="skipHome">Logo</h1>
 			<el-menu background-color="#304156"
 					 text-color="#fff"
 					 active-text-color="#409eff"
@@ -169,7 +169,7 @@
 		color: #ffffff;
 		width: 180px;
 		height: 50px;
-		line-height: 60px;
+		line-height: 50px;
 		text-align: center;
 	}
 
