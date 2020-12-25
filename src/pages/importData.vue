@@ -1,121 +1,120 @@
 <template>
-	<div class="container">
-		<el-card>
-			<el-row :gutter="20">
-				<el-col>
-					<el-button type="primary"
-							   size="small"
-							   icon="el-icon-upload2"
-							   @click="importData"
-					>导入数据</el-button>
-					<el-button type="primary"
-							   size="small"
-							   icon="el-icon-upload2"
-							   @click="fnExport"
-					>导出数据</el-button>
-				</el-col>
-			</el-row>
-			<el-table :data="data" style="width: 100%" border stripe>
-				<el-table-column prop="date" label="日期"></el-table-column>
-				<el-table-column prop="name" label="姓名"></el-table-column>
-				<el-table-column prop="address" label="地址"></el-table-column>
-			</el-table>
-		</el-card>
-	</div>
+    <div class="container">
+        <el-card>
+            <el-row :gutter="20">
+                <el-col>
+                    <el-button type="primary"
+                               size="small"
+                               icon="el-icon-upload2"
+                               @click="importData"
+                    >导入数据
+                    </el-button>
+                    <el-button type="primary"
+                               size="small"
+                               icon="el-icon-download"
+                               @click="fnExport"
+                    >导出数据
+                    </el-button>
+                </el-col>
+            </el-row>
+            <el-table :data="data" style="width: 100%" border stripe>
+                <el-table-column prop="date" label="日期"></el-table-column>
+                <el-table-column prop="name" label="姓名"></el-table-column>
+                <el-table-column prop="address" label="地址"></el-table-column>
+            </el-table>
+        </el-card>
+    </div>
 </template>
 
 <script>
-	import xlsx from 'xlsx'
-	export default {
-		name: "importData",
-		data() {
-			return {
-				data: [ {
-					date: '2016-05-02',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1518 弄'
-				}],
-				file: null
-			}
-		},
+    import xlsx from 'xlsx'
+    import { ImportData, Export } from '../plugins/utils'
 
-		methods: {
-			importData() {
-				this.file = document.createElement('input');
-				this.file.type = 'file';
-				this.file.click();
+    export default {
+        name: "importData",
+        data() {
+            return {
+                data: [ {
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1518 弄'
+                } ],
+                file: null,
+                importClass: new ImportData(),
+            }
+        },
 
-				this.file.onchange = () => {
-					if (this.file.files.length) {
-						let fileName = this.file.files[0].name;
-						let temp = fileName.split('.');
-						let suffix = temp[temp.length - 1].toUpperCase();
+        methods: {
+            importData() {
+                this.file = document.createElement('input');
+                this.file.type = 'file';
+                this.file.click();
 
-						if (suffix !== 'XLSX' && suffix !== 'XLS') {
-							this.$notify.success('提示信息', '请选择文件扩展名为xlsx的文件');
-						}else {
-							this.readFileData(suffix);
-						}
-					}
-				}
-			},
+                this.file.onchange = () => {
+                    if (this.file.files.length) {
+                        let fileName = this.file.files[0].name;
+                        let temp = fileName.split('.');
+                        let suffix = temp[temp.length - 1].toUpperCase();
 
-			readFileData(suffix) {
-				let fileReader = new FileReader();
-				fileReader.readAsBinaryString(this.file.files[0]); // 读取文件内容
-				fileReader.onload = (ev) => { // 读取完毕拿到编码数据
-					this.doXlsx(ev.target['result']);
-				};
-			},
+                        if (suffix !== 'XLSX' && suffix !== 'XLS') {
+                            this.$notify.success('提示信息', '请选择文件扩展名为xlsx的文件');
+                        } else {
+                            this.importClass.readFileData(this.file.files[0], (data) => {
+                                if (!data.length) return;
 
-			doXlsx(data) {
-				let workBook = xlsx.read(data, { type: 'binary' });
-				let origin = [];
-				let origins = [];
-				let dataArray = [];
+                                const resultData = [];
+                                data.forEach(item => { // 单个sheet数据处理
+                                    if (Object.values(item).filter(_ => _)) {
+                                        resultData.push(Object.values(item));
+                                    }
+                                })
 
-				if (workBook.SheetNames.length === 1) { // 一个页签sheet
-					origin = xlsx.utils.sheet_to_json(workBook.Sheets[workBook.SheetNames[0]]);
-				}else { // 如果是多个页签sheet
-					workBook.SheetNames.forEach((item, i) => {
-						origins['data' +i] = xlsx.utils.sheet_to_json(workBook.Sheets[workBook.SheetNames[i]])
-					})
-				}
+                                this.setData(resultData)
+                            });
+                        }
+                    }
+                }
+            },
 
-				if (!origin.length) return;
-				console.log(origin)
-				origin.forEach(item => {
-					console.log(Object.keys(item))
-					if (Object.values(item).filter(_ => _)) {
-						dataArray.push(Object.values(item));
-					}
-				})
+            setData(dataArray) {
+                const keys = [ 'address', 'date', 'name' ]; // 构造需要的字段
+                dataArray.forEach(item => {
+                    let obj = {};
+                    for (const index in Object.values(item)) {
+                        obj[keys[index]] = Object.values(item)[index];
+                    }
 
-				this.setData(dataArray)
-			},
+                    this.data.push(obj)
+                })
+            },
 
-			setData(dataArray) {
-				const keys = ['address', 'date', 'name']; // 构造需要的字段
-				dataArray.forEach(item => {
-					let obj = {};
-					for (const index in Object.values(item)) {
-						obj[keys[index]] = Object.values(item)[index];
-					}
-					this.data.push(obj)
-				})
-			},
+            fnExport() { // 导出数据
+                const e = new Export('导出文件名');
+                let table = [];
+                let header = [
+                    { label: '日期', key: 'date' },
+                    { label: '姓名', key: 'name' },
+                    { label: '地址', key: 'address' }
+                ];
+                table.push(header.map(item => item.label)); // 构造表头
 
-			fnExport() {
-				const ws = xlsx.utils.json_to_sheet(this.data);
-				// 新建book
-				const wb = xlsx.utils.book_new()
-				// 生成xlsx文件(book,sheet数据,sheet命名)
-				xlsx.utils.book_append_sheet(wb, ws, 'Sheet1')
-				// 写文件(book,xlsx文件名称)
-				xlsx.writeFile(wb, '列表详情.xlsx')
-			}
-		}
-	}
+                this.data.forEach(item => { // 构造数据
+                    let rowData = []
+                    header.forEach(data => {
+                        rowData.push(item[data.key]);
+                    });
+                    table.push(rowData)
+                });
+
+                const data = {
+                    table: table,
+                    title: '表格头部说明' // 可有可无
+                }
+
+                e.exportData(data)
+            }
+        }
+    }
 </script>
 
 <style scoped>
