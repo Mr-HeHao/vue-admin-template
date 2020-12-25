@@ -56,7 +56,7 @@
             },
 
             closeSelectedTag(tag) {
-                this.$store.dispatch('delView', tag).then((tags) => {
+                this.$store.dispatch('delView', tag).then(({ tags }) => {
                     this.toLastView(tags, tag);
 					this.$emit('tagChange')
                 })
