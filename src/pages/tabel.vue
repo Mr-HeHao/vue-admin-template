@@ -14,8 +14,8 @@
                 </el-col>
             </el-row>
 
-
-            <el-table :data="tableData" style="width: 100%" border stripe>
+            <div class="table-main">
+                <el-table :data="tableData" style="width: 100%" border stripe>
                 <el-table-column prop="date" label="日期">
                     <template slot-scope="scope">
                         {{ scope.row.date }}
@@ -30,13 +30,15 @@
                     </template>
                 </el-table-column>
             </el-table>
+            </div>
+            
 
-            <el-pagination
+            <!-- <el-pagination
                 :page-sizes="[100, 200, 300, 400]"
                 :page-size="100"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="400">
-            </el-pagination>
+            </el-pagination> -->
 
         </el-card>
     </div>
@@ -88,8 +90,9 @@ export default {
 
 <style scoped lang="less">
 .container {
-    display: flex;
     flex: 1;
+    display: flex;
+    overflow-y: auto;
 }
 
 .form-search {
