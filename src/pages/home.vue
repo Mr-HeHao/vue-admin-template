@@ -98,7 +98,6 @@
 
 		created() {
 			this.activeMenu(this.$route.path);
-			console.log(this.cachedViewsData)
 		},
 
 		computed: mapState([ 'cachedViewsData' ]),
