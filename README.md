@@ -1,9 +1,10 @@
+``` bash
 # vue-admin
 
 ## 主要功能包括：快捷导航、菜单导航配置、导入xlsx、导出xlsx、axios封装、echarts使用、Element-UI使用
 
 ## Build Setup
-
+```
 ``` bash
 # install dependencies
 npm install
